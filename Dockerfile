@@ -20,8 +20,7 @@ ENV METVIEWBUNDLE=MetviewBundle-2022.8.0-Source
 RUN mkdir -p /src 
 RUN mkdir -p /build
 WORKDIR /src
-RUN wget -O ${METVIEWBUNDLE}.tar.gz https://confluence.ecmwf.int/download/attachments/51731119/${METVIEWBUNDLE}.tar.gz && tar -xzvf ${METVIE
-WBUNDLE}.tar.gz && rm -rf ${METVIEWBUNDLE}.tar.gz
+RUN wget -O ${METVIEWBUNDLE}.tar.gz https://confluence.ecmwf.int/download/attachments/51731119/${METVIEWBUNDLE}.tar.gz && tar -xzvf ${METVIEWBUNDLE}.tar.gz && rm -rf ${METVIEWBUNDLE}.tar.gz
 
 WORKDIR /build
 RUN cmake -DENABLE_UI=OFF -DCMAKE_BUILD_TYPE=Release /src/${METVIEWBUNDLE} && make && make install

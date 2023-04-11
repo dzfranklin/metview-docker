@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 
 RUN set -ex \
 	&& apt-get update \
@@ -15,7 +15,7 @@ RUN set -ex \
         libnetcdf-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV METVIEWBUNDLE=MetviewBundle-2022.8.0-Source
+ENV METVIEWBUNDLE=MetviewBundle-2023.1.0-Source
 
 RUN mkdir -p /src 
 RUN mkdir -p /build

@@ -9,13 +9,14 @@ RUN set -ex \
         g++ \
         gcc \
         gfortran \
+        parallel \
         libcairo2-dev \
         libpango1.0-dev \
         libproj-dev \
         libnetcdf-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV METVIEWBUNDLE=MetviewBundle-2023.4.0-Source
+ENV METVIEWBUNDLE=MetviewBundle-2023.4.1-Source
 
 RUN mkdir -p /src 
 RUN mkdir -p /build

@@ -10,8 +10,8 @@ RUN set -ex \
         gcc \
         gfortran \
         parallel \
-	rpcgen \
- 	libtirpc-devel \
+	rpcsvc-proto \
+ 	libtirpc-dev \
         libcairo2-dev \
         libpango1.0-dev \
         libproj-dev \

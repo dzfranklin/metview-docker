@@ -26,7 +26,7 @@ WORKDIR /src
 RUN wget -O ${METVIEWBUNDLE}.tar.gz https://confluence.ecmwf.int/download/attachments/51731119/${METVIEWBUNDLE}.tar.gz && tar -xzvf ${METVIEWBUNDLE}.tar.gz && rm -rf ${METVIEWBUNDLE}.tar.gz
 
 WORKDIR /build
-RUN cmake -DENABLE_UI=OFF -DCMAKE_BUILD_TYPE=Release /src/${METVIEWBUNDLE} && make && make install
+RUN cmake -DENABLE_UI=OFF /src/${METVIEWBUNDLE} && make && make install
 
 RUN pip install metview xarray cfgrib ecmwf-opendata psutil
 

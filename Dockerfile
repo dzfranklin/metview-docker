@@ -16,7 +16,7 @@ RUN set -ex \
         libnetcdf-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV METVIEWBUNDLE=MetviewBundle-2023.10.0-Source
+ENV METVIEWBUNDLE=MetviewBundle-2024.2.0-Source
 
 RUN mkdir -p /src 
 RUN mkdir -p /build

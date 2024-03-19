@@ -1,4 +1,4 @@
-FROM python:3.11-bullseye
+FROM python:3.12-bullseye
 
 RUN set -ex \
 	&& apt-get update \
@@ -16,7 +16,7 @@ RUN set -ex \
         libnetcdf-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV METVIEWBUNDLE=MetviewBundle-2024.2.0-Source
+ENV METVIEWBUNDLE=MetviewBundle-2024.2.1-Source
 
 RUN mkdir -p /src 
 RUN mkdir -p /build

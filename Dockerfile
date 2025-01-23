@@ -1,32 +1,68 @@
-FROM python:3.11-bullseye
+# syntax=docker/dockerfile:1
 
-RUN set -ex \
-	&& apt-get update \
-	&& apt-get install --yes --no-install-suggests --no-install-recommends \
-	cmake \
+FROM ubuntu:jammy
+
+LABEL org.opencontainers.image.source=https://github.com/dzfranklin/metview-docker
+
+ARG METVIEWBUNDLE
+ARG PARALLELISM=1
+
+RUN apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install --yes --no-install-suggests --no-install-recommends \
         bison \
+        build-essential \
+	    cmake \
+        curl \
+        file \
         flex \
-        g++ \
-        gcc \
         gfortran \
-        parallel \
+        git \
+        libbz2-dev \
         libcairo2-dev \
+        libeigen3-dev \
+        libgdbm-dev \
+        liblapack-dev \
+        liblz4-dev \
+        libncurses-dev \
+        libnetcdf-dev \
         libpango1.0-dev \
         libproj-dev \
-        libnetcdf-dev \
+        libsnappy-dev \
+        libtirpc-dev \
+        libtirpc3 \
+        make \
+        parallel \
+        python3-full \
+        python3-pip \
+        python-is-python3 \
+        rpcsvc-proto \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV METVIEWBUNDLE=MetviewBundle-2023.4.1-Source
+COPY ${METVIEWBUNDLE}.tar.gz /build/
+RUN set -x \
+    && cd /build \
+    && tar -xzf ${METVIEWBUNDLE}.tar.gz \
+    && rm -rf ${METVIEWBUNDLE}.tar.gz \
+    && mkdir -p /build/scratch \
+    && cd /build/scratch \
+    && export RPC_PATH="$(find / -name libtirpc.so.3 -exec dirname {} \;)" \
+    && cmake \
+      -DENABLE_UI=OFF \
+      -DCMAKE_BUILD_TYPE=Release \
+      /build/${METVIEWBUNDLE} \
+    && make -j$PARALLELISM \
+    && make install \
+    && rm -r /build
 
-RUN mkdir -p /src 
-RUN mkdir -p /build
-WORKDIR /src
-RUN wget -O ${METVIEWBUNDLE}.tar.gz https://confluence.ecmwf.int/download/attachments/51731119/${METVIEWBUNDLE}.tar.gz && tar -xzvf ${METVIEWBUNDLE}.tar.gz && rm -rf ${METVIEWBUNDLE}.tar.gz
+COPY requirements.txt selfcheck.py /
 
-WORKDIR /build
-RUN cmake -DENABLE_UI=OFF -DCMAKE_BUILD_TYPE=Release /src/${METVIEWBUNDLE} && make && make install
+RUN pip install \
+    --no-cache-dir \
+    --disable-pip-version-check \
+    --no-python-version-warning \
+    -r /requirements.txt && rm /requirements.txt
 
-RUN pip install metview xarray cfgrib ecmwf-opendata psutil
+RUN python /selfcheck.py && rm /selfcheck.py
 
 RUN mkdir -p /examples
 COPY examples/* /examples/

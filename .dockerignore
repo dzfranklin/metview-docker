@@ -1,2 +1,6 @@
-*.md
-LICENSE
+.dockerignore
+.gitignore
+publish.sh
+bundle_version.txt
+Dockerfile
+README.md

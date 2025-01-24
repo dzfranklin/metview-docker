@@ -11,7 +11,7 @@ findlibs==0.0.5
 idna==3.10
 metview==1.16.1
 multiurl==0.3.3
-numpy==2.2.2
+numpy==1.26 # As of MetviewBundle-2024.11.0 installing numpy v2 globally is not compatible with gdal (for examply running gdal2tiles.py does not work)
 packaging==24.2
 pandas==2.2.3
 psutil==6.1.1

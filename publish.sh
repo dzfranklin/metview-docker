@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euox pipefail
 
+# The last gdal docker image based on ubuntu 22, which as of MetviewBundle-2024.11.0 was the latest version metview built on
+gdal_version=3.8.5
+
 # Usage
 #
 # Environment variables
@@ -26,13 +29,22 @@ version=$(tar xzfO "$bundle".tar.gz "$bundle"/metview/VERSION)
 
 # Publish
 
-# shellcheck disable=SC2046
-docker build \
-    --build-arg METVIEWBUNDLE="$bundle" \
-    --build-arg PARALLELISM=$(($(nproc) / 2)) \
-    $(if [[ -z ${LOCAL+x} ]]; then echo "--platform linux/amd64,linux/arm64"; fi) \
-    $(if [[ -n ${LOCAL+x} ]]; then echo "--load"; fi) \
-    --tag "ghcr.io/dzfranklin/metview:$version" \
-    --tag "ghcr.io/dzfranklin/metview:latest" \
-    $(if [[ -z ${DRY_RUN+x} ]]; then echo "--push"; fi) \
-    .
+function publish() {
+  tag_suffix="$1"
+  base_image="$2"
+  # shellcheck disable=SC2046
+  docker build \
+      --build-arg BASE_IMAGE="$base_image" \
+      --build-arg METVIEWBUNDLE="$bundle" \
+      --build-arg PARALLELISM=$(if [[ -z ${LOCAL+x} ]]; then echo $(($(nproc) / 2)); else nproc; fi) \
+      $(if [[ -z ${LOCAL+x} ]]; then echo "--platform linux/amd64,linux/arm64"; fi) \
+      $(if [[ -n ${LOCAL+x} ]]; then echo "--load"; fi) \
+      --tag "ghcr.io/dzfranklin/metview:${version}${tag_suffix}" \
+      --tag "ghcr.io/dzfranklin/metview:latest${tag_suffix}" \
+      $(if [[ -z ${DRY_RUN+x} ]]; then echo "--push"; fi) \
+      .
+}
+
+publish "" "ubuntu:22.04"
+publish "-gdal" "ghcr.io/osgeo/gdal:ubuntu-small-${gdal_version}"
+publish "-gdal-full" "ghcr.io/osgeo/gdal:ubuntu-full-${gdal_version}"

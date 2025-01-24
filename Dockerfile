@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:jammy
+ARG BASE_IMAGE="ubuntu:22.04"
+
+FROM $BASE_IMAGE
 
 LABEL org.opencontainers.image.source=https://github.com/dzfranklin/metview-docker
 
